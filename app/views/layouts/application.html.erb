@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Scented Studio" %></title>
+    <title><%= content_for(:title) || "Scented Studio - Artisan Fragrances" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="description" content="Handcrafted candles, wax melts, essential oils, and home fragrances from Scented Studio">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -16,13 +17,57 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
+    
+    <%# Bootstrap Icons %>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="d-flex flex-column min-vh-100">
+    <%# Feature 4.1.4 ✯ - View Partials: Navigation %>
+    <%= render "shared/navigation" %>
+    
+    <%# Feature 4.1.4 ✯ - View Partials: Flash Messages %>
+    <%# Feature 4.2.3 - Flash messages and session %>
+    <%= render "shared/flash_messages" %>
+    
+    <main class="flex-grow-1">
+      <%= yield %>
+    </main>
+    
+    <%# Footer %>
+    <footer class="bg-dark text-white mt-5 py-4">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <h5>Scented Studio</h5>
+            <p class="text-muted">Handcrafted artisan fragrances since 2018</p>
+          </div>
+          <div class="col-md-4">
+            <h5>Quick Links</h5>
+            <ul class="list-unstyled">
+              <li><%= link_to "Home", root_path, class: "text-muted text-decoration-none" %></li>
+              <li><%= link_to "About", "#", class: "text-muted text-decoration-none" %></li>
+              <li><%= link_to "Contact", "#", class: "text-muted text-decoration-none" %></li>
+            </ul>
+          </div>
+          <div class="col-md-4">
+            <h5>Contact</h5>
+            <p class="text-muted">
+              Waverly Heights, Winnipeg<br>
+              Email: info@scentedstudio.ca<br>
+              Phone: (204) 555-0123
+            </p>
+          </div>
+        </div>
+        <hr class="bg-secondary">
+        <div class="text-center text-muted">
+          <p class="mb-0">&copy; <%= Time.current.year %> Scented Studio. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

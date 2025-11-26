@@ -1,0 +1,45 @@
+<%# Feature 4.1.4 ✯ - View Partials %>
+<%# Shared navigation partial %>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container">
+    <%= link_to root_path, class: "navbar-brand d-flex align-items-center" do %>
+      <span class="fs-4 fw-bold text-primary">🕯️ Scented Studio</span>
+    <% end %>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <%= link_to "Home", root_path, class: "nav-link #{'active' if current_page?(root_path)}" %>
+        </li>
+        
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Categories
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
+            <% if @categories.present? %>
+              <% @categories.each do |category| %>
+                <li><%= link_to category.name, category_path(category), class: "dropdown-item" %></li>
+              <% end %>
+            <% else %>
+              <li><span class="dropdown-item text-muted">No categories available</span></li>
+            <% end %>
+          </ul>
+        </li>
+        
+        <li class="nav-item">
+          <%= link_to "About", "#", class: "nav-link" %>
+        </li>
+        
+        <li class="nav-item">
+          <%= link_to "Contact", "#", class: "nav-link" %>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,153 @@
+<%# Feature 2.3 ✯ - Product detail pages %>
+
+<% content_for :title, "#{@product.name} - Scented Studio" %>
+
+<div class="container py-5">
+  <%# Breadcrumb %>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><%= link_to "Home", root_path %></li>
+      <li class="breadcrumb-item"><%= link_to "Products", products_path %></li>
+      <% if @product.categories.any? %>
+        <li class="breadcrumb-item"><%= link_to @product.categories.first.name, category_path(@product.categories.first) %></li>
+      <% end %>
+      <li class="breadcrumb-item active" aria-current="page"><%= @product.name %></li>
+    </ol>
+  </nav>
+
+  <div class="row">
+    <%# Product Image %>
+    <div class="col-lg-6 mb-4 mb-lg-0">
+      <div class="card shadow-sm">
+        <div class="card-body p-0">
+          <% if @product.image.attached? %>
+            <%= image_tag @product.image, alt: @product.name, class: "img-fluid w-100", style: "max-height: 600px; object-fit: cover;" %>
+          <% else %>
+            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 600px;">
+              <div class="text-center text-muted p-5">
+                <i class="bi bi-image" style="font-size: 5rem;"></i>
+                <p class="mt-3 fs-5">No image available</p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <%# Product Details %>
+    <div class="col-lg-6">
+      <div class="mb-3">
+        <% @product.categories.each do |category| %>
+          <%= link_to category.name, category_path(category), class: "badge bg-secondary text-decoration-none me-1" %>
+        <% end %>
+      </div>
+
+      <h1 class="display-5 fw-bold mb-3"><%= @product.name %></h1>
+      
+      <div class="mb-4">
+        <span class="display-4 text-primary fw-bold">$<%= number_with_precision(@product.price, precision: 2) %></span>
+      </div>
+
+      <%# Stock Status %>
+      <div class="mb-4">
+        <% if @product.stock_quantity > 0 %>
+          <% if @product.stock_quantity < 10 %>
+            <div class="alert alert-warning d-inline-flex align-items-center">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              Only <%= @product.stock_quantity %> left in stock!
+            </div>
+          <% else %>
+            <div class="alert alert-success d-inline-flex align-items-center">
+              <i class="bi bi-check-circle me-2"></i>
+              In Stock (<%= @product.stock_quantity %> available)
+            </div>
+          <% end %>
+        <% else %>
+          <div class="alert alert-danger d-inline-flex align-items-center">
+            <i class="bi bi-x-circle me-2"></i>
+            Out of Stock
+          </div>
+        <% end %>
+      </div>
+
+      <%# Description %>
+      <div class="mb-4">
+        <h5 class="fw-bold mb-3">Description</h5>
+        <p class="text-muted"><%= @product.description %></p>
+      </div>
+
+      <%# Product Details %>
+      <div class="mb-4">
+        <h5 class="fw-bold mb-3">Product Details</h5>
+        <ul class="list-unstyled">
+          <li class="mb-2">
+            <i class="bi bi-tag text-primary me-2"></i>
+            <strong>SKU:</strong> PROD-<%= @product.id.to_s.rjust(6, '0') %>
+          </li>
+          <li class="mb-2">
+            <i class="bi bi-box-seam text-primary me-2"></i>
+            <strong>Stock:</strong> <%= @product.stock_quantity %> units
+          </li>
+          <li class="mb-2">
+            <i class="bi bi-calendar-plus text-primary me-2"></i>
+            <strong>Added:</strong> <%= @product.created_at.strftime("%B %d, %Y") %>
+          </li>
+          <% if @product.categories.any? %>
+            <li class="mb-2">
+              <i class="bi bi-folder text-primary me-2"></i>
+              <strong>Categories:</strong> <%= @product.categories.map(&:name).join(", ") %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+
+      <%# Action Buttons %>
+      <div class="d-grid gap-2">
+        <% if @product.stock_quantity > 0 %>
+          <button type="button" class="btn btn-primary btn-lg" disabled>
+            <i class="bi bi-cart-plus me-2"></i>
+            Add to Cart (Coming Soon)
+          </button>
+        <% else %>
+          <button type="button" class="btn btn-secondary btn-lg" disabled>
+            <i class="bi bi-x-circle me-2"></i>
+            Out of Stock
+          </button>
+        <% end %>
+        
+        <%= link_to products_path, class: "btn btn-outline-secondary btn-lg" do %>
+          <i class="bi bi-arrow-left me-2"></i>
+          Continue Shopping
+        <% end %>
+      </div>
+
+      <%# Additional Info %>
+      <div class="mt-4 p-3 bg-light rounded">
+        <h6 class="fw-bold mb-3">Why Choose Scented Studio?</h6>
+        <ul class="small text-muted mb-0">
+          <li>Handcrafted in Winnipeg with love</li>
+          <li>Made with natural, premium ingredients</li>
+          <li>Eco-friendly and sustainable practices</li>
+          <li>6 years of artisan craftsmanship</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <%# Related Products %>
+  <% if @product.categories.any? %>
+    <div class="mt-5">
+      <h3 class="mb-4">You May Also Like</h3>
+      <div class="row">
+        <% related_products = @product.categories.first.products.where.not(id: @product.id).limit(4) %>
+        <% if related_products.any? %>
+          <%= render partial: "products/product_card", collection: related_products, as: :product %>
+        <% else %>
+          <div class="col-12">
+            <p class="text-muted">No related products found.</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
