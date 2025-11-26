@@ -1,4 +1,7 @@
 class Product < ApplicationRecord
+  # Active Storage
+  has_one_attached :image
+  
   # Associations
   has_many :product_categories, dependent: :destroy
   has_many :categories, through: :product_categories
