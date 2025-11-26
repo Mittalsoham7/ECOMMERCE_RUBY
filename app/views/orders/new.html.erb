@@ -1,0 +1,111 @@
+<%# Feature 3.1.3 ✯ - Checkout Process %>
+
+<div class="container my-5">
+  <h1 class="mb-4">Checkout</h1>
+
+  <div class="row">
+    <%# Order Summary %>
+    <div class="col-lg-4 order-lg-2 mb-4">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Order Summary</h5>
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush mb-3">
+            <% @cart_items.each do |item| %>
+              <li class="list-group-item d-flex justify-content-between">
+                <div>
+                  <h6 class="my-0"><%= item[:product].name %></h6>
+                  <small class="text-muted">Qty: <%= item[:quantity] %></small>
+                </div>
+                <span class="text-muted">$<%= number_with_precision(item[:subtotal], precision: 2) %></span>
+              </li>
+            <% end %>
+          </ul>
+          
+          <hr>
+          
+          <div class="d-flex justify-content-between mb-2">
+            <span>Subtotal:</span>
+            <strong>$<%= number_with_precision(@subtotal, precision: 2) %></strong>
+          </div>
+          
+          <p class="text-muted small mb-0">
+            <i class="bi bi-info-circle"></i> Taxes will be calculated based on your province
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <%# Checkout Form %>
+    <div class="col-lg-8 order-lg-1">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="mb-4">Shipping Information</h4>
+
+          <%= form_with model: @order, url: orders_path, local: true do |f| %>
+            <%# Existing Addresses %>
+            <% if @addresses.any? %>
+              <div class="mb-4">
+                <h5>Select Saved Address</h5>
+                <div class="list-group">
+                  <% @addresses.each do |address| %>
+                    <label class="list-group-item">
+                      <input type="radio" name="order[address_id]" value="<%= address.id %>" class="form-check-input me-2">
+                      <div>
+                        <strong><%= address.street_address %></strong><br>
+                        <small class="text-muted">
+                          <%= address.city %>, <%= address.province.name %> <%= address.postal_code %>
+                        </small>
+                      </div>
+                    </label>
+                  <% end %>
+                  <label class="list-group-item">
+                    <input type="radio" name="order[address_id]" value="" class="form-check-input me-2" checked>
+                    <strong>Use new address below</strong>
+                  </label>
+                </div>
+              </div>
+              
+              <hr class="my-4">
+              <h5>Or Enter New Address</h5>
+            <% end %>
+
+            <%# New Address Form (Feature 3.1.5) %>
+            <div class="row g-3">
+              <div class="col-12">
+                <%= f.label :street_address, "Street Address", class: "form-label" %>
+                <%= f.text_field :street_address, class: "form-control", placeholder: "123 Main Street" %>
+              </div>
+
+              <div class="col-md-6">
+                <%= f.label :city, class: "form-label" %>
+                <%= f.text_field :city, class: "form-control", placeholder: "Winnipeg" %>
+              </div>
+
+              <div class="col-md-6">
+                <%= f.label :province_id, "Province", class: "form-label" %>
+                <%= f.select :province_id, 
+                             options_from_collection_for_select(@provinces, :id, :name), 
+                             { prompt: "Select Province" }, 
+                             { class: "form-select" } %>
+              </div>
+
+              <div class="col-md-6">
+                <%= f.label :postal_code, class: "form-label" %>
+                <%= f.text_field :postal_code, class: "form-control", placeholder: "R3C 0A1" %>
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="d-grid gap-2">
+              <%= f.submit "Place Order", class: "btn btn-primary btn-lg" %>
+              <%= link_to "Back to Cart", cart_path, class: "btn btn-outline-secondary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

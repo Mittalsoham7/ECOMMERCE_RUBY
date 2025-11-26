@@ -1,2 +1,237 @@
+// Feature 4.1.5 - SASS/SCSS with nesting, variables, inheritance, and operators
+// Feature 4.1.6 - CSS Framework (Bootstrap 5)
+
+// SCSS Variables
+$primary-color: #8B4513;
+$secondary-color: #D2691E;
+$accent-color: #F4A460;
+$text-dark: #2C1810;
+$text-light: #6B4423;
+$background-light: #FFF8DC;
+$border-radius: 8px;
+$box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+$transition-speed: 0.3s;
+
+// Bootstrap customization
+$primary: $primary-color;
+$secondary: $secondary-color;
+
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-icons/font/bootstrap-icons';
+
+// SCSS Nesting and Custom Styles
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: $text-dark;
+  background-color: #fafafa;
+}
+
+// Product Card Styles with SCSS nesting
+.product-card {
+  transition: transform $transition-speed, box-shadow $transition-speed;
+  border-radius: $border-radius;
+  border: none;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  .card-img-top {
+    border-radius: $border-radius $border-radius 0 0;
+    overflow: hidden;
+  }
+  
+  .card-title {
+    color: $text-dark;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+  
+  .card-text {
+    color: $text-light;
+  }
+}
+
+// Navigation Styles with SCSS inheritance
+%nav-link-base {
+  transition: color $transition-speed;
+  font-weight: 500;
+}
+
+.navbar {
+  box-shadow: $box-shadow;
+  
+  .nav-link {
+    @extend %nav-link-base;
+    
+    &:hover {
+      color: $primary-color !important;
+    }
+    
+    &.active {
+      color: $primary-color !important;
+      font-weight: 600;
+    }
+  }
+  
+  .navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+// Button Styles with SCSS operators
+.btn {
+  border-radius: $border-radius / 2;
+  font-weight: 500;
+  transition: all $transition-speed;
+  
+  &-primary {
+    background-color: $primary-color;
+    border-color: $primary-color;
+    
+    &:hover {
+      background-color: darken($primary-color, 10%);
+      border-color: darken($primary-color, 10%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba($primary-color, 0.3);
+    }
+  }
+  
+  &-outline-primary {
+    color: $primary-color;
+    border-color: $primary-color;
+    
+    &:hover {
+      background-color: $primary-color;
+      border-color: $primary-color;
+    }
+  }
+}
+
+// Card Styles
+.card {
+  border-radius: $border-radius;
+  border: none;
+  box-shadow: $box-shadow;
+  
+  .card-header {
+    border-radius: $border-radius $border-radius 0 0;
+    font-weight: 600;
+  }
+}
+
+// Badge Styles with SCSS variables
+.badge {
+  padding: 0.5em 0.8em;
+  border-radius: $border-radius / 2;
+  font-weight: 500;
+  
+  &.bg-secondary {
+    background-color: lighten($secondary-color, 20%) !important;
+  }
+}
+
+// Alert Styles
+.alert {
+  border-radius: $border-radius;
+  border: none;
+  
+  &-success {
+    background-color: lighten(#28a745, 45%);
+    color: darken(#28a745, 20%);
+  }
+  
+  &-info {
+    background-color: lighten(#17a2b8, 45%);
+    color: darken(#17a2b8, 20%);
+  }
+  
+  &-warning {
+    background-color: lighten(#ffc107, 35%);
+    color: darken(#ffc107, 40%);
+  }
+}
+
+// Form Styles
+.form-control, .form-select {
+  border-radius: $border-radius / 2;
+  border: 2px solid #e0e0e0;
+  transition: border-color $transition-speed;
+  
+  &:focus {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 0.2rem rgba($primary-color, 0.25);
+  }
+}
+
+// Footer Styles
+footer {
+  background-color: $text-dark;
+  
+  a {
+    transition: color $transition-speed;
+    
+    &:hover {
+      color: $accent-color !important;
+    }
+  }
+}
+
+// Shopping Cart Badge
+.nav-link {
+  .badge {
+    font-size: 0.7rem;
+    padding: 0.25em 0.5em;
+  }
+}
+
+// Breadcrumb Styles
+.breadcrumb {
+  background-color: transparent;
+  padding: 0.5rem 0;
+  
+  .breadcrumb-item {
+    a {
+      color: $text-light;
+      text-decoration: none;
+      
+      &:hover {
+        color: $primary-color;
+      }
+    }
+    
+    &.active {
+      color: $text-dark;
+    }
+  }
+}
+
+// Table Styles
+.table {
+  th {
+    color: $text-dark;
+    font-weight: 600;
+    border-bottom: 2px solid $primary-color;
+  }
+  
+  td {
+    vertical-align: middle;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .product-card {
+    margin-bottom: 1rem;
+  }
+  
+  .navbar-brand {
+    font-size: 1.2rem;
+  }
+}

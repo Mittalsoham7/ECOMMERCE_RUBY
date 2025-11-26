@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  # Devise routes for user authentication (Feature 3.1.4 ✯)
+  devise_for :users
+  
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Root path - Products index page (Feature 2.1 ✯)
@@ -9,6 +12,20 @@ Rails.application.routes.draw do
   
   # Categories routes
   resources :categories, only: [:show]
+  
+  # Shopping Cart routes (Feature 3.1.1 & 3.1.2 ✯)
+  get 'cart', to: 'cart#index', as: 'cart'
+  post 'cart/add/:id', to: 'cart#add_item', as: 'add_to_cart'
+  patch 'cart/update/:id', to: 'cart#update_item', as: 'update_cart_item'
+  delete 'cart/remove/:id', to: 'cart#remove_item', as: 'remove_from_cart'
+  delete 'cart/clear', to: 'cart#clear', as: 'clear_cart'
+  
+  # Orders routes (Feature 3.1.3 ✯ - Checkout)
+  resources :orders, only: [:index, :show, :new, :create]
+  
+  # User profile and addresses (Feature 3.1.5)
+  resource :profile, only: [:show, :edit, :update]
+  resources :addresses, except: [:show]
   
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

@@ -1,0 +1,106 @@
+<%# Feature 3.2.1 - Order details page %>
+
+<div class="container my-5">
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <div class="card shadow">
+        <div class="card-header bg-success text-white">
+          <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+              <i class="bi bi-check-circle"></i> Order Confirmation
+            </h4>
+            <span class="badge bg-light text-dark">Order #<%= @order.id %></span>
+          </div>
+        </div>
+        
+        <div class="card-body">
+          <div class="alert alert-success">
+            <h5><i class="bi bi-check-circle-fill"></i> Thank you for your order!</h5>
+            <p class="mb-0">Your order has been placed successfully. We'll send you a confirmation email shortly.</p>
+          </div>
+
+          <%# Order Details %>
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <h6 class="text-muted">Order Date</h6>
+              <p><%= @order.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+            </div>
+            <div class="col-md-6">
+              <h6 class="text-muted">Order Status</h6>
+              <p>
+                <span class="badge bg-<%= @order.status == 'pending' ? 'warning' : 'success' %>">
+                  <%= @order.status.titleize %>
+                </span>
+              </p>
+            </div>
+          </div>
+
+          <%# Shipping Address %>
+          <div class="mb-4">
+            <h6 class="text-muted">Shipping Address</h6>
+            <p class="mb-0"><%= @order.shipping_address %></p>
+          </div>
+
+          <hr>
+
+          <%# Order Items %>
+          <h5 class="mb-3">Order Items</h5>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th class="text-end">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @order.order_items.each do |item| %>
+                  <tr>
+                    <td>
+                      <strong><%= item.product.name %></strong><br>
+                      <small class="text-muted"><%= truncate(item.product.description, length: 60) %></small>
+                    </td>
+                    <td>$<%= number_with_precision(item.unit_price, precision: 2) %></td>
+                    <td><%= item.quantity %></td>
+                    <td class="text-end">$<%= number_with_precision(item.subtotal, precision: 2) %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+
+          <hr>
+
+          <%# Order Totals %>
+          <div class="row">
+            <div class="col-md-6 ms-auto">
+              <table class="table table-sm">
+                <tr>
+                  <td>Subtotal:</td>
+                  <td class="text-end">$<%= number_with_precision(@order.subtotal, precision: 2) %></td>
+                </tr>
+                <tr>
+                  <td>Tax:</td>
+                  <td class="text-end">$<%= number_with_precision(@order.tax_amount, precision: 2) %></td>
+                </tr>
+                <tr class="table-active">
+                  <td><strong>Total:</strong></td>
+                  <td class="text-end"><strong>$<%= number_with_precision(@order.total_amount, precision: 2) %></strong></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="d-grid gap-2">
+            <%= link_to "View All Orders", orders_path, class: "btn btn-primary" %>
+            <%= link_to "Continue Shopping", products_path, class: "btn btn-outline-secondary" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

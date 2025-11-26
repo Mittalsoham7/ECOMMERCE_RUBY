@@ -104,10 +104,12 @@
       <%# Action Buttons %>
       <div class="d-grid gap-2">
         <% if @product.stock_quantity > 0 %>
-          <button type="button" class="btn btn-primary btn-lg" disabled>
-            <i class="bi bi-cart-plus me-2"></i>
-            Add to Cart (Coming Soon)
-          </button>
+          <%= form_with url: add_to_cart_path(@product.id), method: :post, local: true do |f| %>
+            <div class="input-group mb-3">
+              <%= f.number_field :quantity, value: 1, min: 1, max: @product.stock_quantity, class: "form-control form-control-lg" %>
+              <%= f.submit "Add to Cart", class: "btn btn-primary btn-lg" %>
+            </div>
+          <% end %>
         <% else %>
           <button type="button" class="btn btn-secondary btn-lg" disabled>
             <i class="bi bi-x-circle me-2"></i>

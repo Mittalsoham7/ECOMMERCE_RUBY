@@ -1,0 +1,62 @@
+<%# Feature 3.2.1 - List all past orders %>
+
+<div class="container my-5">
+  <h1 class="mb-4">My Orders</h1>
+
+  <% if @orders.empty? %>
+    <div class="alert alert-info">
+      <h4>No orders yet</h4>
+      <p>You haven't placed any orders yet. Start shopping to see your orders here!</p>
+      <%= link_to "Browse Products", products_path, class: "btn btn-primary" %>
+    </div>
+  <% else %>
+    <div class="row">
+      <% @orders.each do |order| %>
+        <div class="col-12 mb-3">
+          <div class="card">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-md-2">
+                  <h6 class="text-muted mb-1">Order #</h6>
+                  <strong><%= order.id %></strong>
+                </div>
+                
+                <div class="col-md-3">
+                  <h6 class="text-muted mb-1">Date</h6>
+                  <%= order.created_at.strftime("%b %d, %Y") %>
+                </div>
+                
+                <div class="col-md-2">
+                  <h6 class="text-muted mb-1">Status</h6>
+                  <span class="badge bg-<%= order.status == 'pending' ? 'warning' : 'success' %>">
+                    <%= order.status.titleize %>
+                  </span>
+                </div>
+                
+                <div class="col-md-2">
+                  <h6 class="text-muted mb-1">Total</h6>
+                  <strong>$<%= number_with_precision(order.total_amount, precision: 2) %></strong>
+                </div>
+                
+                <div class="col-md-3 text-end">
+                  <%= link_to "View Details", order_path(order), class: "btn btn-sm btn-primary" %>
+                </div>
+              </div>
+              
+              <%# Order Items Preview %>
+              <div class="mt-3">
+                <small class="text-muted">
+                  <strong><%= order.order_items.count %></strong> item(s): 
+                  <%= order.order_items.limit(3).map { |item| item.product.name }.join(", ") %>
+                  <% if order.order_items.count > 3 %>
+                    and <%= order.order_items.count - 3 %> more...
+                  <% end %>
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

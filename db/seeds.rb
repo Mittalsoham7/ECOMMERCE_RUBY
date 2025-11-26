@@ -8,11 +8,44 @@ puts "🌱 Starting seed process..."
 puts "Clearing existing data..."
 
 # Clear existing data
+OrderItem.destroy_all
+Order.destroy_all
+Address.destroy_all
+User.destroy_all
+Province.destroy_all
 ProductCategory.destroy_all
 Product.destroy_all
 Category.destroy_all
 
 puts "✅ Existing data cleared"
+puts ""
+
+# Create Provinces with correct tax rates (Feature 3.1.5)
+puts "Creating provinces with tax rates..."
+
+provinces_data = [
+  { name: "Alberta", gst_rate: 0.05, pst_rate: 0.00, hst_rate: 0.00 },
+  { name: "British Columbia", gst_rate: 0.05, pst_rate: 0.07, hst_rate: 0.00 },
+  { name: "Manitoba", gst_rate: 0.05, pst_rate: 0.07, hst_rate: 0.00 },
+  { name: "New Brunswick", gst_rate: 0.00, pst_rate: 0.00, hst_rate: 0.15 },
+  { name: "Newfoundland and Labrador", gst_rate: 0.00, pst_rate: 0.00, hst_rate: 0.15 },
+  { name: "Northwest Territories", gst_rate: 0.05, pst_rate: 0.00, hst_rate: 0.00 },
+  { name: "Nova Scotia", gst_rate: 0.00, pst_rate: 0.00, hst_rate: 0.15 },
+  { name: "Nunavut", gst_rate: 0.05, pst_rate: 0.00, hst_rate: 0.00 },
+  { name: "Ontario", gst_rate: 0.00, pst_rate: 0.00, hst_rate: 0.13 },
+  { name: "Prince Edward Island", gst_rate: 0.00, pst_rate: 0.00, hst_rate: 0.15 },
+  { name: "Quebec", gst_rate: 0.05, pst_rate: 0.09975, hst_rate: 0.00 },
+  { name: "Saskatchewan", gst_rate: 0.05, pst_rate: 0.06, hst_rate: 0.00 },
+  { name: "Yukon", gst_rate: 0.05, pst_rate: 0.00, hst_rate: 0.00 }
+]
+
+provinces = provinces_data.map do |prov_data|
+  province = Province.create!(prov_data)
+  puts "  ✓ Created province: #{province.name} (Total tax: #{(province.total_tax_rate * 100).round(2)}%)"
+  province
+end
+
+puts "✅ #{provinces.count} provinces created"
 puts ""
 
 # Create Categories
