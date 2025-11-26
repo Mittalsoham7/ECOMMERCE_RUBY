@@ -3,6 +3,7 @@ class ProductsController < ApplicationController
     # Feature 2.1 ✯ - Front page navigation
     # Feature 2.5 - Pagination with Kaminari
     # Feature 2.6 ✯ - Search by category
+    # Feature 2.4 - Product Filters (on_sale, new, recently_updated)
     
     @categories = Category.all
     @products = Product.includes(:categories)
@@ -16,6 +17,16 @@ class ProductsController < ApplicationController
     # Filter by category
     if params[:category_id].present? && params[:category_id] != "all"
       @products = @products.joins(:categories).where(categories: { id: params[:category_id] })
+    end
+    
+    # Feature 2.4 - Apply product filters
+    case params[:filter]
+    when 'on_sale'
+      @products = @products.on_sale
+    when 'new'
+      @products = @products.new_products
+    when 'recently_updated'
+      @products = @products.recently_updated
     end
     
     @products = @products.order(created_at: :desc).page(params[:page]).per(12)

@@ -83,11 +83,15 @@ soy_candles_category = categories.find { |c| c.name == "Soy Candles" }
   scent_type = scent_profiles.keys.sample
   scent = scent_profiles[scent_type].sample
   
+  # Feature 2.4 - Mark some products as on_sale
+  is_on_sale = i % 5 == 0  # Every 5th product is on sale
+  
   product = Product.create!(
     name: "#{scent} Soy Candle",
     description: "Hand-poured soy candle with #{scent.downcase} fragrance. Made with 100% natural soy wax and cotton wick. Burns clean for approximately 40-50 hours. Perfect for creating a cozy atmosphere in any room.",
     price: rand(18.99..34.99).round(2),
-    stock_quantity: rand(5..50)
+    stock_quantity: rand(5..50),
+    on_sale: is_on_sale
   )
   product.categories << soy_candles_category
   print "."
@@ -117,11 +121,15 @@ wax_melts_category = categories.find { |c| c.name == "Wax Melts" }
   scent_type = scent_profiles.keys.sample
   scent = scent_profiles[scent_type].sample
   
+  # Feature 2.4 - Mark some products as on_sale
+  is_on_sale = i % 4 == 0  # Every 4th product is on sale
+  
   product = Product.create!(
     name: "#{scent} Wax Melts",
     description: "Highly scented wax melts with #{scent.downcase} fragrance. Each pack contains 6 cubes providing 20-30 hours of fragrance. Perfect for flameless home fragrance. Compatible with any wax warmer.",
     price: rand(8.99..15.99).round(2),
-    stock_quantity: rand(10..60)
+    stock_quantity: rand(10..60),
+    on_sale: is_on_sale
   )
   product.categories << wax_melts_category
   print "."
@@ -181,11 +189,15 @@ room_sprays_category = categories.find { |c| c.name == "Room Sprays" }
   scent_type = scent_profiles.keys.sample
   scent = scent_profiles[scent_type].sample
   
+  # Feature 2.4 - Mark some products as on_sale
+  is_on_sale = i % 3 == 0  # Every 3rd product is on sale
+  
   product = Product.create!(
     name: "#{scent} Room Spray",
     description: "Instant room refresher with #{scent.downcase} fragrance. Made with natural ingredients and essential oils. Quick-drying formula that eliminates odors. 8oz spray bottle provides 200+ sprays.",
     price: rand(14.99..22.99).round(2),
-    stock_quantity: rand(10..50)
+    stock_quantity: rand(10..50),
+    on_sale: is_on_sale
   )
   product.categories << room_sprays_category
   print "."

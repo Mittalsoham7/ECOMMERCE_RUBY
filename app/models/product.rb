@@ -15,6 +15,9 @@ class Product < ApplicationRecord
   # Scopes
   scope :in_stock, -> { where('stock_quantity > ?', 0) }
   scope :out_of_stock, -> { where(stock_quantity: 0) }
-  scope :recent, -> { where('created_at >= ?', 3.days.ago) }
+  
+  # Feature 2.4 - Product Filters
+  scope :on_sale, -> { where(on_sale: true) }
+  scope :new_products, -> { where('created_at >= ?', 3.days.ago) }
   scope :recently_updated, -> { where('updated_at >= ? AND created_at < ?', 3.days.ago, 3.days.ago) }
 end
