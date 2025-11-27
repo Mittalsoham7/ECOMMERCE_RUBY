@@ -27,11 +27,27 @@
           
           <div class="d-flex justify-content-between mb-2">
             <span>Subtotal:</span>
-            <strong>$<%= number_with_precision(@subtotal, precision: 2) %></strong>
+            <strong id="subtotal-amount">$<%= number_with_precision(@subtotal, precision: 2) %></strong>
           </div>
           
-          <p class="text-muted small mb-0">
-            <i class="bi bi-info-circle"></i> Taxes will be calculated based on your province
+          <div id="tax-breakdown" style="display: none;">
+            <div class="d-flex justify-content-between mb-1 text-muted">
+              <span id="tax-label">Tax:</span>
+              <span id="tax-amount">$0.00</span>
+            </div>
+          </div>
+          
+          <hr id="total-divider" style="display: none;">
+          
+          <div id="total-section" style="display: none;">
+            <div class="d-flex justify-content-between mb-2">
+              <span><strong>Total:</strong></span>
+              <strong id="total-amount" class="text-primary">$<%= number_with_precision(@subtotal, precision: 2) %></strong>
+            </div>
+          </div>
+          
+          <p class="text-muted small mb-0" id="tax-info">
+            <i class="bi bi-info-circle"></i> Select a province to calculate taxes
           </p>
         </div>
       </div>
@@ -109,3 +125,90 @@
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const provinceSelect = document.querySelector('select[name="order[province_id]"]');
+  const subtotal = <%= @subtotal %>;
+  
+  if (provinceSelect) {
+    provinceSelect.addEventListener('change', function() {
+      const provinceId = this.value;
+      
+      if (provinceId) {
+        // Fetch tax calculation
+        fetch('<%= calculate_tax_orders_path %>', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
+          },
+          body: JSON.stringify({
+            province_id: provinceId,
+            subtotal: subtotal
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Update tax breakdown
+          const taxLabel = document.getElementById('tax-label');
+          let taxText = 'Tax';
+          
+          if (data.hst > 0) {
+            taxText = `HST (${(data.hst * 100).toFixed(1)}%)`;
+          } else {
+            const taxes = [];
+            if (data.gst > 0) taxes.push(`GST ${(data.gst * 100).toFixed(1)}%`);
+            if (data.pst > 0) taxes.push(`PST ${(data.pst * 100).toFixed(1)}%`);
+            taxText = taxes.join(' + ');
+          }
+          
+          taxLabel.textContent = taxText + ':';
+          document.getElementById('tax-amount').textContent = '$' + data.tax_amount.toFixed(2);
+          document.getElementById('total-amount').textContent = '$' + data.total.toFixed(2);
+          
+          // Show tax sections
+          document.getElementById('tax-breakdown').style.display = 'block';
+          document.getElementById('total-divider').style.display = 'block';
+          document.getElementById('total-section').style.display = 'block';
+          document.getElementById('tax-info').innerHTML = '<i class="bi bi-check-circle text-success"></i> Taxes calculated for ' + data.province_name;
+        })
+        .catch(error => {
+          console.error('Error calculating tax:', error);
+          document.getElementById('tax-info').innerHTML = '<i class="bi bi-exclamation-circle text-danger"></i> Error calculating taxes';
+        });
+      } else {
+        // Hide tax sections if no province selected
+        document.getElementById('tax-breakdown').style.display = 'none';
+        document.getElementById('total-divider').style.display = 'none';
+        document.getElementById('total-section').style.display = 'none';
+        document.getElementById('tax-info').innerHTML = '<i class="bi bi-info-circle"></i> Select a province to calculate taxes';
+      }
+    });
+  }
+  
+  // Handle saved address selection
+  const addressRadios = document.querySelectorAll('input[name="order[address_id]"]');
+  addressRadios.forEach(radio => {
+    radio.addEventListener('change', function() {
+      if (this.value) {
+        // Extract province from the address display
+        const addressLabel = this.closest('label');
+        const addressText = addressLabel.textContent;
+        
+        // Find the province select and trigger change
+        // This is a simplified approach - in production you'd want to store province_id in data attributes
+        const provinceMatch = addressText.match(/,\s*([^,]+)\s+[A-Z]\d[A-Z]/);
+        if (provinceMatch) {
+          const provinceName = provinceMatch[1].trim();
+          const provinceOption = Array.from(provinceSelect.options).find(opt => opt.text === provinceName);
+          if (provinceOption) {
+            provinceSelect.value = provinceOption.value;
+            provinceSelect.dispatchEvent(new Event('change'));
+          }
+        }
+      }
+    });
+  });
+});
+</script>

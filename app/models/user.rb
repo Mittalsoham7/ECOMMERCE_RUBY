@@ -11,4 +11,13 @@ class User < ApplicationRecord
   # Validations
   validates :name, presence: true, length: { minimum: 2, maximum: 100 }
   validates :email, presence: true, uniqueness: true
+
+  # Ransack configuration for ActiveAdmin search
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "email", "id", "name", "updated_at"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["addresses", "orders"]
+  end
 end

@@ -20,4 +20,13 @@ class Product < ApplicationRecord
   scope :on_sale, -> { where(on_sale: true) }
   scope :new_products, -> { where('created_at >= ?', 3.days.ago) }
   scope :recently_updated, -> { where('updated_at >= ? AND created_at < ?', 3.days.ago, 3.days.ago) }
+
+  # Ransack configuration for ActiveAdmin search
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "description", "id", "name", "on_sale", "price", "stock_quantity", "updated_at"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["categories", "product_categories"]
+  end
 end

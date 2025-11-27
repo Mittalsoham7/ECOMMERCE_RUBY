@@ -12,6 +12,15 @@ class Order < ApplicationRecord
   # Default status
   after_initialize :set_default_status, if: :new_record?
 
+  # Ransack configuration for ActiveAdmin search
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "id", "status", "tax_amount", "total_amount", "updated_at", "user_id"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["order_items", "products", "user"]
+  end
+
   private
 
   def set_default_status

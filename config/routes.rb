@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  devise_for :admin_users, ActiveAdmin::Devise.config
+  ActiveAdmin.routes(self)
   # Devise routes for user authentication (Feature 3.1.4 ✯)
   devise_for :users
   
@@ -21,7 +23,11 @@ Rails.application.routes.draw do
   delete 'cart/clear', to: 'cart#clear', as: 'clear_cart'
   
   # Orders routes (Feature 3.1.3 ✯ - Checkout)
-  resources :orders, only: [:index, :show, :new, :create]
+  resources :orders, only: [:index, :show, :new, :create] do
+    collection do
+      post :calculate_tax
+    end
+  end
   
   # User profile and addresses (Feature 3.1.5)
   resource :profile, only: [:show, :edit, :update]

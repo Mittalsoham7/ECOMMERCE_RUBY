@@ -28,6 +28,26 @@ class OrdersController < ApplicationController
     @subtotal = @cart_items.sum { |item| item[:subtotal] }
   end
 
+  # Calculate tax for selected province
+  def calculate_tax
+    province = Province.find(params[:province_id])
+    subtotal = params[:subtotal].to_f
+    
+    tax_rate = province.total_tax_rate
+    tax_amount = subtotal * tax_rate
+    total = subtotal + tax_amount
+    
+    render json: {
+      province_name: province.name,
+      gst: province.gst_rate,
+      pst: province.pst_rate,
+      hst: province.hst_rate,
+      tax_rate: tax_rate,
+      tax_amount: tax_amount.round(2),
+      total: total.round(2)
+    }
+  end
+
   # Feature 3.1.3 ✯ - Process checkout
   def create
     if @cart_items.empty?

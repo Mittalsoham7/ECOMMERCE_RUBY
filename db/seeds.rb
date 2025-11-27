@@ -305,3 +305,17 @@ puts "  Products: #{Product.count}"
 puts "  Product-Category associations: #{ProductCategory.count}"
 puts ""
 puts "🎉 Scented Studio database is ready!"
+# Create admin users
+if Rails.env.development?
+  AdminUser.find_or_create_by!(email: 'admin@example.com') do |admin|
+    admin.password = 'password'
+    admin.password_confirmation = 'password'
+  end
+  
+  AdminUser.find_or_create_by!(email: 'mittalsoham7@gmail.com') do |admin|
+    admin.password = '120712'
+    admin.password_confirmation = '120712'
+  end
+  
+  puts "✅ Admin users created"
+end
